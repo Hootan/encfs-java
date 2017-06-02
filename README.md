@@ -1,5 +1,11 @@
 # encfs-java
 
+A modified version of encfs-java for MiXplorer file manager.
+
+The original project:
+https://github.com/mrpdaemon/encfs-java
+
+# Changes:
 - Changed BlockCrypto.java
   volume.getBlockCipher() 
     to 
