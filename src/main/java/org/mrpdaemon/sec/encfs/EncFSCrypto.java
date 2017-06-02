@@ -15,14 +15,18 @@
 
 package org.mrpdaemon.sec.encfs;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Class containing static methods implementing crypto functionality for the
@@ -36,7 +40,7 @@ public final class EncFSCrypto {
 	}
 
 	// Create a new Mac object for the given key.
-	static Mac newMac(Key key) throws InvalidKeyException,
+	synchronized static Mac newMac(Key key) throws InvalidKeyException,
 			EncFSUnsupportedException {
 		Mac hmac;
 		try {
@@ -50,12 +54,12 @@ public final class EncFSCrypto {
 	}
 
 	// Creates a new AES key with the given key bytes.
-	static Key newKey(byte[] keyBytes) {
+	synchronized static Key newKey(byte[] keyBytes) {
 		return new SecretKeySpec(keyBytes, "AES");
 	}
 
 	// Return a a cipher with the given specification
-	static Cipher getCipher(String cipherSpec) throws EncFSUnsupportedException {
+	synchronized static Cipher getCipher(String cipherSpec) throws EncFSUnsupportedException {
 		try {
 			return Cipher.getInstance(cipherSpec);
 		} catch (NoSuchAlgorithmException e) {
@@ -66,7 +70,7 @@ public final class EncFSCrypto {
 	}
 
 	// Returns an IvParameterSpec for the given iv/seed
-	private static IvParameterSpec newIvSpec(Mac mac, byte[] iv, byte[] ivSeed) {
+	private synchronized static IvParameterSpec newIvSpec(Mac mac, byte[] iv, byte[] ivSeed) {
 
 		// TODO: Verify input byte[] lengths, raise Exception on bad ivSeed
 		// length
@@ -94,7 +98,7 @@ public final class EncFSCrypto {
 	}
 
 	// Initialize the given cipher in the requested mode
-	static void cipherInit(Key key, Mac mac, int opMode, Cipher cipher,
+	synchronized static void cipherInit(Key key, Mac mac, int opMode, Cipher cipher,
 			byte[] iv, byte[] ivSeed) throws InvalidAlgorithmParameterException {
 		try {
 			cipher.init(opMode, key, newIvSpec(mac, iv, ivSeed));
@@ -104,14 +108,14 @@ public final class EncFSCrypto {
 	}
 
 	// Initialize the given cipher for a volume with the given parameters
-	static void cipherInit(EncFSVolume volume, int opMode, Cipher cipher,
+	synchronized static void cipherInit(EncFSVolume volume, int opMode, Cipher cipher,
 			byte[] ivSeed) throws InvalidAlgorithmParameterException {
 		cipherInit(volume.getKey(), volume.getMAC(), opMode, cipher,
 				volume.getIV(), ivSeed);
 	}
 
 	// Encrypt the key data
-	static byte[] encryptKeyData(byte[] volKeyData, byte[] passIvData,
+	synchronized static byte[] encryptKeyData(byte[] volKeyData, byte[] passIvData,
 			Key passKey, Mac mac, byte[] mac32)
 			throws EncFSUnsupportedException, EncFSInvalidConfigException,
 			EncFSCorruptDataException {
@@ -131,7 +135,7 @@ public final class EncFSCrypto {
 	}
 
 	// Block encoding helper to do padding
-	static byte[] getBytesForBlockAlgorithm(String curPath) {
+	synchronized static byte[] getBytesForBlockAlgorithm(String curPath) {
 		byte[] encodeBytes;// Only pad for block mode
 
 		int byteLen = curPath.getBytes().length;
@@ -170,7 +174,7 @@ public final class EncFSCrypto {
 	 * @throws EncFSChecksumException
 	 *             File checksum mismatch
 	 */
-	public static String decodeName(EncFSVolume volume, String fileName,
+	public synchronized static String decodeName(EncFSVolume volume, String fileName,
 			String volumePath) throws EncFSCorruptDataException,
 			EncFSChecksumException {
 
@@ -206,7 +210,7 @@ public final class EncFSCrypto {
 	 * @throws EncFSCorruptDataException
 	 *             Corrupt data in config file
 	 */
-	public static String encodeName(EncFSVolume volume, String fileName,
+	public synchronized static String encodeName(EncFSVolume volume, String fileName,
 			String volumePath) throws EncFSCorruptDataException {
 
 		EncFSFilenameEncryptionAlgorithm algorithm = volume.getConfig()
@@ -237,7 +241,7 @@ public final class EncFSCrypto {
 	 *            Cleartext volume path containing the path to encode
 	 * @return Encrypted path
 	 */
-	public static String encodePath(EncFSVolume volume, String pathName,
+	public synchronized static String encodePath(EncFSVolume volume, String pathName,
 			String volumePath) throws EncFSCorruptDataException {
 		String[] pathParts = pathName.split(EncFSVolume.PATH_SEPARATOR);
 		String tmpVolumePath = volumePath;
@@ -271,12 +275,12 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 64-bit MAC over the given input bytes
-	static byte[] mac64(Mac mac, byte[] input, int inputOffset) {
+	synchronized static byte[] mac64(Mac mac, byte[] input, int inputOffset) {
 		return mac64(mac, input, inputOffset, input.length - inputOffset);
 	}
 
 	// Compute 64-bit MAC over the given input bytes
-	static byte[] mac64(Mac mac, byte[] input, int inputOffset, int inputLen) {
+	synchronized static byte[] mac64(Mac mac, byte[] input, int inputOffset, int inputLen) {
 		mac.reset();
 		mac.update(input, inputOffset, inputLen);
 		byte[] macResult = mac.doFinal();
@@ -289,7 +293,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 64-bit MAC
-	private static byte[] mac64(Mac mac, byte[] input) {
+	private synchronized static byte[] mac64(Mac mac, byte[] input) {
 
 		byte[] macResult = mac.doFinal(input);
 		byte[] mac64 = new byte[8];
@@ -301,7 +305,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 32-bit MAC
-	private static byte[] mac32(Mac mac, byte[] input) {
+	private synchronized static byte[] mac32(Mac mac, byte[] input) {
 		byte[] mac64 = mac64(mac, input);
 		byte[] mac32 = new byte[4];
 		mac32[0] = (byte) (mac64[4] ^ mac64[0]);
@@ -313,7 +317,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 16-bit MAC
-	static byte[] mac16(Mac mac, byte[] input) {
+	synchronized static byte[] mac16(Mac mac, byte[] input) {
 		byte[] mac32 = mac32(mac, input);
 		byte[] mac16 = new byte[2];
 		mac16[0] = (byte) (mac32[2] ^ mac32[0]);
@@ -323,7 +327,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 64-bit MAC and update chainedIv
-	static byte[] mac64(Mac mac, byte[] input, byte[] chainedIv) {
+	synchronized static byte[] mac64(Mac mac, byte[] input, byte[] chainedIv) {
 		byte[] concat = new byte[input.length + chainedIv.length];
 		System.arraycopy(input, 0, concat, 0, input.length);
 		for (int i = input.length; i < input.length + chainedIv.length; i++) {
@@ -344,7 +348,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 32-bit MAC and update chainedIv
-	static byte[] mac32(Mac mac, byte[] input, byte[] chainedIv) {
+	synchronized static byte[] mac32(Mac mac, byte[] input, byte[] chainedIv) {
 		byte[] mac64 = mac64(mac, input, chainedIv);
 		byte[] mac32 = new byte[4];
 		mac32[0] = (byte) (mac64[4] ^ mac64[0]);
@@ -356,7 +360,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute 16-bit MAC and update chainedIv
-	static byte[] mac16(Mac mac, byte[] input, byte[] chainedIv) {
+	synchronized static byte[] mac16(Mac mac, byte[] input, byte[] chainedIv) {
 		byte[] mac32 = mac32(mac, input, chainedIv);
 		byte[] mac16 = new byte[2];
 		mac16[0] = (byte) (mac32[2] ^ mac32[0]);
@@ -366,7 +370,7 @@ public final class EncFSCrypto {
 	}
 
 	// Reverse the "shuffle bytes" transformation
-	static void unshuffleBytes(byte[] input) {
+	synchronized static void unshuffleBytes(byte[] input) {
 		for (int i = (input.length - 1); i > 0; i--) {
 			// Note size - 1
 			input[i] ^= input[i - 1];
@@ -374,7 +378,7 @@ public final class EncFSCrypto {
 	}
 
 	// Apply the "shuffle bytes" transformation
-	static void shuffleBytes(byte[] buf) {
+	synchronized static void shuffleBytes(byte[] buf) {
 		int size = buf.length;
 		for (int i = 0; i < size - 1; ++i) {
 			buf[i + 1] ^= buf[i];
@@ -382,7 +386,7 @@ public final class EncFSCrypto {
 	}
 
 	// Flip the given byte input stream
-	static byte[] flipBytes(byte[] input) {
+	synchronized static byte[] flipBytes(byte[] input) {
 		byte[] result = new byte[input.length];
 
 		int offset = 0;
@@ -403,7 +407,7 @@ public final class EncFSCrypto {
 	}
 
 	// Increment the given IV seed by one
-	static byte[] incrementIvSeedByOne(byte[] ivSeed)
+	synchronized static byte[] incrementIvSeedByOne(byte[] ivSeed)
 			throws EncFSUnsupportedException {
 		if (ivSeed.length == 4) {
 			return EncFSUtil.convertIntToByteArrayBigEndian(EncFSUtil
@@ -417,7 +421,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute file IV
-	static byte[] computeFileIV(byte[] chainIv, byte[] macBytes) {
+	synchronized static byte[] computeFileIV(byte[] chainIv, byte[] macBytes) {
 		byte[] fileIv = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			fileIv[i] = (byte) (macBytes[i] ^ chainIv[i]);
@@ -426,7 +430,7 @@ public final class EncFSCrypto {
 	}
 
 	// Return first two bytes of a given 8 byte sequence
-	static byte[] getMacBytes(byte[] bytes) {
+	synchronized static byte[] getMacBytes(byte[] bytes) {
 		// TODO: make sure its multiple of 16
 		byte[] macBytes = new byte[8];
 		macBytes[6] = bytes[0];
@@ -435,7 +439,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute chained IV
-	static byte[] computeChainedIV(EncFSVolume volume, String volumePath,
+	synchronized static byte[] computeChainedIV(EncFSVolume volume, String volumePath,
 			EncFSConfig config) {
 		// Chained IV computation
 		byte[] chainIv = new byte[8];
