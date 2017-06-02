@@ -6,25 +6,17 @@ The original project:
 https://github.com/mrpdaemon/encfs-java
 
 # Changes:
-Changed BlockCrypto.java
+Changed BlockCrypto:
   volume.getBlockCipher() 
     to 
   BlockCrypto.newBlockCipher()
 
-Changed StreamCrypto.java
-  volume.getStreamCipher()
-    to 
-  StreamCrypto.newStreamCipher()
+Changed StreamCrypto:
+  volume.getStreamCipher() to  StreamCrypto.newStreamCipher()
   
-Chnaged  
-  Arrays.copyOf()
-    to
-  EncFSUtil.copyOf()
+Chnaged Arrays.copyOf() to EncFSUtil.copyOf()
   
-Chnaged  
-  Arrays.copyOfRange()
-    to
-  EncFSUtil.copyOfRange()
+Chnaged Arrays.copyOfRange() to EncFSUtil.copyOfRange()
 
 Added synchronized to mothods in EncFSCrypto.java
 
