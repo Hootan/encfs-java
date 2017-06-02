@@ -6,7 +6,7 @@ The original project:
 https://github.com/mrpdaemon/encfs-java
 
 # Changes:
-+ Changed BlockCrypto.java
+Changed BlockCrypto.java
   volume.getBlockCipher() 
     to 
   BlockCrypto.newBlockCipher()
@@ -28,4 +28,4 @@ Chnaged
 
 Added synchronized to mothods in EncFSCrypto.java
 
-+ And some other tiny changes.
+And some other tiny changes.
