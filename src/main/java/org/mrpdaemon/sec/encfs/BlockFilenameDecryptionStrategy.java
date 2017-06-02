@@ -31,6 +31,8 @@ class BlockFilenameDecryptionStrategy extends BasicFilenameDecryptionStrategy {
 			byte[] fileIv) throws EncFSCorruptDataException {
 		try {
 			return BlockCrypto.blockDecrypt(volume, fileIv, encFileName);
+		} catch (EncFSUnsupportedException e) {
+			throw new EncFSCorruptDataException(e);
 		} catch (InvalidAlgorithmParameterException e) {
 			throw new EncFSCorruptDataException(e);
 		} catch (IllegalBlockSizeException e) {
@@ -44,7 +46,7 @@ class BlockFilenameDecryptionStrategy extends BasicFilenameDecryptionStrategy {
 	protected String decryptPost(byte[] fileName) {
 		int padLen = fileName[fileName.length - 1];
 
-		return new String(Arrays.copyOfRange(fileName, 0, fileName.length
+		return new String(EncFSUtil.copyOfRange(fileName, 0, fileName.length
 				- padLen));
 	}
 }

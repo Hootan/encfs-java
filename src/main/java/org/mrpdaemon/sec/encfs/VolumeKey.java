@@ -32,8 +32,8 @@ class VolumeKey {
 			EncFSCorruptDataException {
 		// Prepare key/IV for decryption
 		int keySizeInBytes = config.getVolumeKeySizeInBits() / 8;
-		byte[] passKeyData = Arrays.copyOfRange(pbkdf2Data, 0, keySizeInBytes);
-		byte[] passIvData = Arrays.copyOfRange(pbkdf2Data, keySizeInBytes,
+		byte[] passKeyData = EncFSUtil.copyOfRange(pbkdf2Data, 0, keySizeInBytes);
+		byte[] passIvData = EncFSUtil.copyOfRange(pbkdf2Data, keySizeInBytes,
 				keySizeInBytes + EncFSVolume.IV_LENGTH_IN_BYTES);
 
 		Key passKey = EncFSCrypto.newKey(passKeyData);
@@ -82,17 +82,17 @@ class VolumeKey {
 			throw new EncFSInvalidConfigException("Corrupt key data in config");
 		}
 
-		byte[] encryptedVolKey = Arrays.copyOfRange(cipherVolKeyData, 4,
+		byte[] encryptedVolKey = EncFSUtil.copyOfRange(cipherVolKeyData, 4,
 				cipherVolKeyData.length);
 
 		// Prepare key/IV for decryption
 		int keySizeInBytes = config.getVolumeKeySizeInBits() / 8;
-		byte[] passKeyData = Arrays.copyOfRange(pbkdf2Data, 0, keySizeInBytes);
-		byte[] passIvData = Arrays.copyOfRange(pbkdf2Data, keySizeInBytes,
+		byte[] passKeyData = EncFSUtil.copyOfRange(pbkdf2Data, 0, keySizeInBytes);
+		byte[] passIvData = EncFSUtil.copyOfRange(pbkdf2Data, keySizeInBytes,
 				keySizeInBytes + EncFSVolume.IV_LENGTH_IN_BYTES);
 
 		Key passKey = EncFSCrypto.newKey(passKeyData);
-		byte[] ivSeed = Arrays.copyOfRange(cipherVolKeyData, 0, 4);
+		byte[] ivSeed = EncFSUtil.copyOfRange(cipherVolKeyData, 0, 4);
 
 		// Decrypt the volume key data
 		Mac mac = encryptVolumeKeyData(passKey);

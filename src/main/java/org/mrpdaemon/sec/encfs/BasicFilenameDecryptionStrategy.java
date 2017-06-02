@@ -52,7 +52,7 @@ abstract class BasicFilenameDecryptionStrategy extends
 			throw new EncFSCorruptDataException(e);
 		}
 
-		byte[] encFileName = Arrays.copyOfRange(base256FileName, 2,
+		byte[] encFileName = EncFSUtil.copyOfRange(base256FileName, 2,
 				base256FileName.length);
 
 		if (encFileName.length == 0) {
@@ -86,7 +86,7 @@ abstract class BasicFilenameDecryptionStrategy extends
 			mac16 = EncFSCrypto.mac16(volume.getMAC(), decFileName);
 		}
 
-		byte[] expectedMac = Arrays.copyOfRange(base256FileName, 0, 2);
+		byte[] expectedMac = EncFSUtil.copyOfRange(base256FileName, 0, 2);
 		if (!Arrays.equals(mac16, expectedMac)) {
 			throw new EncFSChecksumException("Mismatch in file name checksum");
 		}

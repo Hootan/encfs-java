@@ -71,7 +71,8 @@ public class StreamCrypto {
 			byte[] data) throws EncFSUnsupportedException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
 			BadPaddingException {
-		Cipher streamCipher = volume.getStreamCipher();
+		//Cipher streamCipher = volume.getStreamCipher();
+		Cipher streamCipher = StreamCrypto.newStreamCipher();
 		return streamDecrypt(streamCipher, volume.getMAC(), volume.getKey(),
 				volume.getIV(), ivSeed, data);
 	}
@@ -81,7 +82,8 @@ public class StreamCrypto {
 			byte[] data, int offset, int len) throws EncFSUnsupportedException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
 			BadPaddingException {
-		return streamDecrypt(volume.getStreamCipher(), volume.getMAC(),
+		Cipher streamCipher = StreamCrypto.newStreamCipher();
+		return streamDecrypt(streamCipher, volume.getMAC(),
 				volume.getKey(), volume.getIV(), ivSeed, data, offset, len);
 	}
 
@@ -94,7 +96,7 @@ public class StreamCrypto {
 		// First round uses IV seed + 1 for IV generation
 		byte[] ivSeedPlusOne = EncFSCrypto.incrementIvSeedByOne(ivSeed);
 
-		byte[] encBuf = Arrays.copyOfRange(data, offset, offset + len);
+		byte[] encBuf = EncFSUtil.copyOfRange(data, offset, offset + len);
 		EncFSCrypto.shuffleBytes(encBuf);
 
 		EncFSCrypto.cipherInit(key, mac, Cipher.ENCRYPT_MODE, cipher, iv,
@@ -125,7 +127,8 @@ public class StreamCrypto {
 			byte[] data) throws EncFSUnsupportedException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
 			BadPaddingException {
-		return streamEncrypt(volume.getStreamCipher(), volume.getMAC(),
+        Cipher streamCipher = StreamCrypto.newStreamCipher();
+		return streamEncrypt(streamCipher, volume.getMAC(),
 				volume.getKey(), volume.getIV(), ivSeed, data);
 	}
 
@@ -134,7 +137,8 @@ public class StreamCrypto {
 			byte[] data, int offset, int len) throws EncFSUnsupportedException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
 			BadPaddingException {
-		return streamEncrypt(volume.getStreamCipher(), volume.getMAC(),
+        Cipher streamCipher = StreamCrypto.newStreamCipher();
+		return streamEncrypt(streamCipher, volume.getMAC(),
 				volume.getKey(), volume.getIV(), ivSeed, data, offset, len);
 	}
 

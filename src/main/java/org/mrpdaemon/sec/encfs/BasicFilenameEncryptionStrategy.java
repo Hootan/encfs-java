@@ -73,7 +73,7 @@ abstract class BasicFilenameEncryptionStrategy extends
 			byte[] chainIv) {
 		if (volume.getConfig().isChainedNameIV()) {
 			return EncFSCrypto.mac16(volume.getMAC(), paddedDecFileName,
-					Arrays.copyOf(chainIv, chainIv.length));
+					EncFSUtil.copyOf(chainIv, chainIv.length));
 		} else {
 			return EncFSCrypto.mac16(volume.getMAC(), paddedDecFileName);
 		}

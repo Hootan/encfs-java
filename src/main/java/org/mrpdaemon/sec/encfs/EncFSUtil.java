@@ -138,4 +138,36 @@ public final class EncFSUtil {
 			bytesRead = in.read(buf);
 		}
 	}
+
+    /**
+     * Copies the specified array, truncating or padding with zeros (if necessary)
+     */
+    public static byte[] copyOf(byte[] original, int newLength) {
+        if (newLength < 0)
+            throw new NegativeArraySizeException(Integer.toString(newLength));
+        return copyOfRange(original, 0, newLength);
+    }
+
+    /**
+     * Copies the specified range of the specified array into a new array.
+     */
+    public static byte[] copyOfRange(byte[] original, int start, int end) {
+        if (start > end)
+            throw new IllegalArgumentException();
+
+        int originalLength = original.length;
+        if (start < 0 || start > originalLength) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        int resultLength = end - start;
+        int copyLength = Math.min(resultLength, originalLength - start);
+        byte[] result = new byte[resultLength];
+        System.arraycopy(original, start, result, 0, copyLength);
+        return result;
+    }
+
+    public static void clearDerivedKeyData(EncFSVolume volume) {
+        volume.setDerivedKeyData(null);
+    }
+	
 }

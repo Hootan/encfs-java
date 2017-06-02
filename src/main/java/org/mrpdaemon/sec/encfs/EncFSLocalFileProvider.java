@@ -314,7 +314,7 @@ public class EncFSLocalFileProvider implements EncFSFileProvider {
 			try {
 				srcF.createNewFile();
 			} catch (Exception e) {
-				throw new IOException(e);
+				throw new IOException(e.toString());
 			}
 		}
 		return new FileOutputStream(srcF);

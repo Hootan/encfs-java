@@ -87,7 +87,7 @@ public final class EncFSCrypto {
 		}
 
 		// Take first 16 bytes of the SHA-1 output (20 bytes)
-		byte[] ivResult = Arrays.copyOfRange(mac.doFinal(concat), 0,
+		byte[] ivResult = EncFSUtil.copyOfRange(mac.doFinal(concat), 0,
 				EncFSVolume.IV_LENGTH_IN_BYTES);
 
 		return new IvParameterSpec(ivResult);

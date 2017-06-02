@@ -114,7 +114,7 @@ public class EncFSOutputStream extends FilterOutputStream {
 
 			try {
 				this.fileIv = StreamCrypto.streamDecrypt(volume, initIv,
-						Arrays.copyOf(fileHeader, fileHeader.length));
+						EncFSUtil.copyOf(fileHeader, fileHeader.length));
 			} catch (InvalidAlgorithmParameterException e) {
 				e.printStackTrace();
 			} catch (IllegalBlockSizeException e) {
@@ -207,13 +207,13 @@ public class EncFSOutputStream extends FilterOutputStream {
 						getBlockIV(), dataBuf, 0, dataBytes);
 			}
 		} catch (IllegalBlockSizeException e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		} catch (BadPaddingException e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		} catch (InvalidAlgorithmParameterException e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		} catch (EncFSUnsupportedException e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		}
 
 		out.write(encBuffer);

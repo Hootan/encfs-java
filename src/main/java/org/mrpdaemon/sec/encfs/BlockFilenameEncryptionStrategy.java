@@ -33,6 +33,8 @@ class BlockFilenameEncryptionStrategy extends BasicFilenameEncryptionStrategy {
 			throws EncFSCorruptDataException {
 		try {
 			return BlockCrypto.blockEncrypt(volume, fileIv, paddedDecFileName);
+		} catch (EncFSUnsupportedException e) {
+			throw new EncFSCorruptDataException(e);
 		} catch (InvalidAlgorithmParameterException e) {
 			throw new EncFSCorruptDataException(e);
 		} catch (IllegalBlockSizeException e) {
@@ -50,7 +52,7 @@ class BlockFilenameEncryptionStrategy extends BasicFilenameEncryptionStrategy {
 		if (padLen == 0) {
 			padLen = padBytesSize;
 		}
-		byte[] paddedDecFileName = Arrays.copyOf(decFileName,
+		byte[] paddedDecFileName = EncFSUtil.copyOf(decFileName,
 				decFileName.length + padLen);
 		Arrays.fill(paddedDecFileName, decFileName.length,
 				paddedDecFileName.length, (byte) padLen);

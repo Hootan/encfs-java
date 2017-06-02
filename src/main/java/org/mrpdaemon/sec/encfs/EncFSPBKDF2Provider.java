@@ -21,8 +21,6 @@ package org.mrpdaemon.sec.encfs;
 public abstract class EncFSPBKDF2Provider {
 
 	/**
-	 * @param passwordLen
-	 *            Length of the password provided in 'password'
 	 * @param password
 	 *            Password to hash
 	 * @param saltLen

@@ -54,8 +54,8 @@ public class EncFSVolume {
 	private byte[] volumeIV;
 	private byte[] derivedKeyData;
 	private Mac volumeMAC;
-	private Cipher streamCipher;
-	private Cipher blockCipher;
+	//private Cipher streamCipher;
+	//private Cipher blockCipher;
 	private EncFSFile rootDir;
 	private EncFSFileProvider fileProvider;
 
@@ -78,13 +78,13 @@ public class EncFSVolume {
 		if (keyData.length < keyLength) {
 			throw new EncFSInvalidConfigException("Key size too large");
 		}
-		volumeKey = EncFSCrypto.newKey(Arrays
+		volumeKey = EncFSCrypto.newKey(EncFSUtil
 				.copyOfRange(keyData, 0, keyLength));
 
 		volumeIV = copyIVdata(keyData, keyLength);
 		volumeMAC = createVolumeMAC();
-		streamCipher = StreamCrypto.newStreamCipher();
-		blockCipher = BlockCrypto.newBlockCipher();
+		//streamCipher = StreamCrypto.newStreamCipher();
+		//blockCipher = BlockCrypto.newBlockCipher();
 
 		rootDir = getFile(ROOT_PATH);
 	}
@@ -96,7 +96,7 @@ public class EncFSVolume {
 		if (ivLength != IV_LENGTH_IN_BYTES) {
 			throw new EncFSInvalidConfigException("Non-standard IV length");
 		}
-		return Arrays.copyOfRange(keyData, keyLength, keyLength + ivLength);
+		return EncFSUtil.copyOfRange(keyData, keyLength, keyLength + ivLength);
 	}
 
 	// Create the volume MAC
@@ -135,9 +135,9 @@ public class EncFSVolume {
 	/**
 	 * Combine the given directory and file name into a path string
 	 * 
-	 * @param dir
+	 * @param dirPath
 	 *            Directory forming the first path component
-	 * @param file
+	 * @param fileName
 	 *            File forming the second path component
 	 * 
 	 * @return String representing the combined path
@@ -153,9 +153,9 @@ public class EncFSVolume {
 	/**
 	 * Combine the given directory and file name into a path string
 	 * 
-	 * @param dirPath
+	 * @param dir
 	 *            Directory path forming the first path component
-	 * @param fileName
+	 * @param file
 	 *            File name forming the second path component
 	 * 
 	 * @return String representing the combined path
@@ -250,18 +250,18 @@ public class EncFSVolume {
 	 * 
 	 * @return Stream cipher instance for stream encryption/decryption
 	 */
-	public Cipher getStreamCipher() {
+	/*public Cipher getStreamCipher() {
 		return streamCipher;
-	}
+	}*/
 
 	/**
 	 * Returns the block cipher instance for block encryption/decryption
 	 * 
 	 * @return Block cipher instance for block encryption/decryption
 	 */
-	public Cipher getBlockCipher() {
+	/*public Cipher getBlockCipher() {
 		return blockCipher;
-	}
+	}*/
 
 	/**
 	 * Returns a file object representing the root directory of the volume

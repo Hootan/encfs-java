@@ -298,7 +298,7 @@ public class EncFSFile {
 			try {
 				return volume.copyPath(getPath(), dstPath.getPath());
 			} catch (EncFSCorruptDataException e) {
-				throw new IOException(e);
+				throw new IOException(e.toString());
 			}
 		} else if (dstPath.isDirectory()) {
 			/*
@@ -309,7 +309,7 @@ public class EncFSFile {
 			try {
 				realDstPath = volume.createFile(dstPath.getPath(), getName());
 			} catch (EncFSCorruptDataException e) {
-				throw new IOException(e);
+				throw new IOException(e.toString());
 			}
 			return copy(realDstPath);
 		} else {
@@ -323,7 +323,7 @@ public class EncFSFile {
 					EncFSUtil.copyWholeStreamAndClose(openInputStream(),
 							dstPath.openOutputStream(getLength()));
 				} catch (EncFSException e) {
-					throw new IOException(e);
+					throw new IOException(e.toString());
 				}
 				return true;
 			} else {

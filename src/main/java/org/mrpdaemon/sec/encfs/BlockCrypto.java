@@ -30,8 +30,10 @@ class BlockCrypto {
 	// Common method to perform a block operation
 	private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
 			byte[] data, int opMode) throws InvalidAlgorithmParameterException,
-			IllegalBlockSizeException, BadPaddingException {
-		Cipher cipher = volume.getBlockCipher();
+			IllegalBlockSizeException, BadPaddingException,
+			EncFSUnsupportedException {
+		//Cipher cipher = volume.getBlockCipher();
+		Cipher cipher = BlockCrypto.newBlockCipher();
 		EncFSCrypto.cipherInit(volume, opMode, cipher, ivSeed);
 		return cipher.doFinal(data);
 	}
@@ -39,14 +41,16 @@ class BlockCrypto {
 	// Perform block encryption
 	protected static byte[] blockDecrypt(EncFSVolume volume, byte[] ivSeed,
 			byte[] data) throws InvalidAlgorithmParameterException,
-			IllegalBlockSizeException, BadPaddingException {
+			IllegalBlockSizeException, BadPaddingException,
+            EncFSUnsupportedException {
 		return blockOperation(volume, ivSeed, data, Cipher.DECRYPT_MODE);
 	}
 
 	// Perform block decryption
 	protected static byte[] blockEncrypt(EncFSVolume volume, byte[] ivSeed,
 			byte[] data) throws IllegalBlockSizeException,
-			InvalidAlgorithmParameterException, BadPaddingException {
+			InvalidAlgorithmParameterException, BadPaddingException,
+            EncFSUnsupportedException {
 		return blockOperation(volume, ivSeed, data, Cipher.ENCRYPT_MODE);
 	}
 }
