@@ -5,19 +5,23 @@ A modified version of encfs-java for MiXplorer file manager.
 The original project:
 https://github.com/mrpdaemon/encfs-java
 
-# Changes:
-Changed BlockCrypto:
-  volume.getBlockCipher() 
-    to 
-  BlockCrypto.newBlockCipher()
+### Changes:
 
-Changed StreamCrypto:
-  volume.getStreamCipher() to  StreamCrypto.newStreamCipher()
+##### Cipher is not thread-safe:
+###### BlockCrypto:
+  - volume.getBlockCipher() to BlockCrypto.newBlockCipher()
+###### StreamCrypto:
+  - volume.getStreamCipher() to StreamCrypto.newStreamCipher()
   
-Chnaged Arrays.copyOf() to EncFSUtil.copyOf()
-  
-Chnaged Arrays.copyOfRange() to EncFSUtil.copyOfRange()
+##### Compatibility:
+  - Arrays.copyOf() to EncFSUtil.copyOf()
+  - Arrays.copyOfRange() to EncFSUtil.copyOfRange()
+  - new IOException(e) to new IOException(e.getMessage())
 
-Added synchronized to mothods in EncFSCrypto.java
+##### Wrong codes:
+###### EncFSVolume.java:
+- getEncryptedFileLength():
+long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes() 					- headerLength;
 
-And some other tiny changes.
+- getDecryptedFileLength():
+long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes();
