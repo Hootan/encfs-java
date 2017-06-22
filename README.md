@@ -18,7 +18,7 @@ https://github.com/mrpdaemon/encfs-java
   - Arrays.copyOfRange() to EncFSUtil.copyOfRange()
   - new IOException(e) to new IOException(e.getMessage())
 
-##### Wrong codes:
+##### Bugs:
 ###### EncFSVolume.java:
 - getDecryptedFileLength():
 ```java
