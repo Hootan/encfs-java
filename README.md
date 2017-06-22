@@ -73,9 +73,9 @@ if (headerLength > 0) {
 ```java
 import org.mrpdaemon.sec.encfs.PBKDF2Engine;
 import org.mrpdaemon.sec.encfs.PBKDF2Parameters;
-...
+...    
 
-private final EncFSPBKDF2Provider pbkProvider = new EncFSPBKDF2Provider() {
+new EncFSVolumeBuilder().withPbkdf2Provider(new EncFSPBKDF2Provider() {
         @Override
         public byte[] doPBKDF2(String password, int saltLen, byte[] salt, int iterations, int keyLen) {
             try {
@@ -86,9 +86,5 @@ private final EncFSPBKDF2Provider pbkProvider = new EncFSPBKDF2Provider() {
                 return null;
             }
         }
-    };
-    
-
-new EncFSVolumeBuilder()
-                    .withPbkdf2Provider(pbkProvider)
+    });
 ```
