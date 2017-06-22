@@ -13,6 +13,17 @@ https://github.com/mrpdaemon/encfs-java
 //private Cipher streamCipher;
 //private Cipher blockCipher;
 ...
+
+//streamCipher = StreamCrypto.newStreamCipher();
+//blockCipher = BlockCrypto.newBlockCipher();
+...
+
+/*public Cipher getStreamCipher() {
+	return streamCipher;
+}
+/*public Cipher getBlockCipher() {
+	return blockCipher;
+}*/
 ```
 ###### BlockCrypto.java:
 ```java
