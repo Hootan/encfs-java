@@ -298,7 +298,7 @@ public class EncFSFile {
 			try {
 				return volume.copyPath(getPath(), dstPath.getPath());
 			} catch (EncFSCorruptDataException e) {
-				throw new IOException(e.toString());
+				throw new IOException(e.getMessage());
 			}
 		} else if (dstPath.isDirectory()) {
 			/*
@@ -309,7 +309,7 @@ public class EncFSFile {
 			try {
 				realDstPath = volume.createFile(dstPath.getPath(), getName());
 			} catch (EncFSCorruptDataException e) {
-				throw new IOException(e.toString());
+				throw new IOException(e.getMessage());
 			}
 			return copy(realDstPath);
 		} else {
