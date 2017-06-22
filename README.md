@@ -56,6 +56,7 @@ if (headerLength > 0) {
 ```java
 if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
+      //+ headerLength;
       - headerLength;
 
   long numBlocks = ((size - 1) / blockLength) + 1;
