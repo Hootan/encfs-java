@@ -8,6 +8,12 @@ https://github.com/mrpdaemon/encfs-java
 ### Changes:
 
 ##### Cipher is not thread-safe:
+###### EncFSVolume.java:
+```java
+//private Cipher streamCipher;
+//private Cipher blockCipher;
+...
+```
 ###### BlockCrypto.java:
 ```java
   private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
