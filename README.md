@@ -54,11 +54,6 @@ public long getDecryptedFileLength(long encryptedFileLength) {
 if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
       ;//+ headerLength;
-
-  long numBlocks = ((size - 1) / blockLength) + 1;
-
-  size -= numBlocks * headerLength;
-}
 ...
 ```
 
@@ -71,10 +66,5 @@ if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
       //+ headerLength;
       - headerLength;
-
-  long numBlocks = ((size - 1) / blockLength) + 1;
-
-  size += numBlocks * headerLength;
-}
 ...
 ```
