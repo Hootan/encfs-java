@@ -159,16 +159,16 @@ public final class EncFSCrypto {
 
 	/**
 	 * Decode the given fileName under the given volume and volume path
-	 * 
+	 *
 	 * @param volume
 	 *            Volume hosting the file
 	 * @param fileName
 	 *            Encrypted file name
 	 * @param volumePath
 	 *            Cleartext path of the file in the volume
-	 * 
+	 *
 	 * @return Decrypted file name
-	 * 
+	 *
 	 * @throws EncFSCorruptDataException
 	 *             Corrupt data in input name
 	 * @throws EncFSChecksumException
@@ -197,16 +197,16 @@ public final class EncFSCrypto {
 
 	/**
 	 * Encode the given fileName under the given volume and volume path
-	 * 
+	 *
 	 * @param volume
 	 *            Volume hosting the file
 	 * @param fileName
 	 *            Cleartext file name
 	 * @param volumePath
 	 *            Cleartext path of the file in the volume
-	 * 
+	 *
 	 * @return Encrypted file name
-	 * 
+	 *
 	 * @throws EncFSCorruptDataException
 	 *             Corrupt data in config file
 	 */
@@ -232,7 +232,7 @@ public final class EncFSCrypto {
 
 	/**
 	 * Encode a given path under the given volume and volume path
-	 * 
+	 *
 	 * @param volume
 	 *            Volume hosting the path
 	 * @param pathName
