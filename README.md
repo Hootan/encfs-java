@@ -46,8 +46,11 @@ https://github.com/mrpdaemon/encfs-java
 
 ##### Bugs:
 ###### EncFSVolume.java:
-- getDecryptedFileLength():
 ```java
+public long getDecryptedFileLength(long encryptedFileLength) {
+
+...
+
 if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
       ;//+ headerLength;
@@ -56,10 +59,14 @@ if (headerLength > 0) {
 
   size -= numBlocks * headerLength;
 }
+...
 ```
 
-- getEncryptedFileLength():
 ```java
+public long getEncryptedFileLength(long decryptedFileLength) {
+
+...
+
 if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
       //+ headerLength;
@@ -69,4 +76,5 @@ if (headerLength > 0) {
 
   size += numBlocks * headerLength;
 }
+...
 ```
