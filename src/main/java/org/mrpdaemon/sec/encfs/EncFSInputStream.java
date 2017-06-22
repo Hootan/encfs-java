@@ -162,9 +162,9 @@ public class EncFSInputStream extends FilterInputStream {
 				try {
 					ret = readBlock();
 				} catch (EncFSCorruptDataException e) {
-					throw new IOException(e.toString());
+					throw new IOException(e.getMessage());
 				} catch (EncFSUnsupportedException e) {
-					throw new IOException(e.toString());
+					throw new IOException(e.getMessage());
 				}
 
 				if (ret < 0) {
