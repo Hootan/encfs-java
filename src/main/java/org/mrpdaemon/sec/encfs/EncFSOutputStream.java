@@ -207,13 +207,13 @@ public class EncFSOutputStream extends FilterOutputStream {
 						getBlockIV(), dataBuf, 0, dataBytes);
 			}
 		} catch (IllegalBlockSizeException e) {
-			throw new IOException(e.toString());
+			throw new IOException(e.getMessage());
 		} catch (BadPaddingException e) {
-			throw new IOException(e.toString());
+			throw new IOException(e.getMessage());
 		} catch (InvalidAlgorithmParameterException e) {
-			throw new IOException(e.toString());
+			throw new IOException(e.getMessage());
 		} catch (EncFSUnsupportedException e) {
-			throw new IOException(e.toString());
+			throw new IOException(e.getMessage());
 		}
 
 		out.write(encBuffer);
