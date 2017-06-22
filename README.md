@@ -8,9 +8,9 @@ https://github.com/mrpdaemon/encfs-java
 ### Changes:
 
 ##### Cipher is not thread-safe:
-###### BlockCrypto:
+###### BlockCrypto.java:
   - volume.getBlockCipher() to BlockCrypto.newBlockCipher()
-###### StreamCrypto:
+###### StreamCrypto.java:
   - volume.getStreamCipher() to StreamCrypto.newStreamCipher()
   
 ##### Compatibility:
@@ -20,12 +20,26 @@ https://github.com/mrpdaemon/encfs-java
 
 ##### Wrong codes:
 ###### EncFSVolume.java:
-- getEncryptedFileLength():
-```java
-long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes() - headerLength;
-```
-
 - getDecryptedFileLength():
 ```java
-long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes();
+if (headerLength > 0) {
+  long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
+      ;//+ headerLength;
+
+  long numBlocks = ((size - 1) / blockLength) + 1;
+
+  size -= numBlocks * headerLength;
+}
+```
+
+- getEncryptedFileLength():
+```java
+if (headerLength > 0) {
+  long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
+      - headerLength;
+
+  long numBlocks = ((size - 1) / blockLength) + 1;
+
+  size += numBlocks * headerLength;
+}
 ```
