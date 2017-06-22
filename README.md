@@ -68,3 +68,27 @@ if (headerLength > 0) {
       - headerLength;
 ...
 ```
+
+#### Added PBKDF2 provider
+```java
+import org.mrpdaemon.sec.encfs.PBKDF2Engine;
+import org.mrpdaemon.sec.encfs.PBKDF2Parameters;
+...
+
+private final EncFSPBKDF2Provider pbkProvider = new EncFSPBKDF2Provider() {
+        @Override
+        public byte[] doPBKDF2(String password, int saltLen, byte[] salt, int iterations, int keyLen) {
+            try {
+                return new PBKDF2Engine(new PBKDF2Parameters("HmacSHA1", "ISO-8859-1", salt, iterations))
+                            .deriveKey(password.toCharArray(), keyLen + saltLen);
+            } catch (Exception e) {
+                MiXLog.e(e);
+                return null;
+            }
+        }
+    };
+    
+
+new EncFSVolumeBuilder()
+                    .withPbkdf2Provider(pbkProvider)
+```
