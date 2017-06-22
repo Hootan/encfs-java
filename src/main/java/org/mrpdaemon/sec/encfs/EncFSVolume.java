@@ -334,8 +334,8 @@ public class EncFSVolume {
 		long headerLength = volumeConfig.getNumberOfMACBytesForEachFileBlock()
 				+ volumeConfig.getNumberOfRandomBytesInEachMACHeader();
 		if (headerLength > 0) {
-			long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
-					;//+ headerLength;
+			long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes();
+					//+ headerLength;
 
 			long numBlocks = ((size - 1) / blockLength) + 1;
 
