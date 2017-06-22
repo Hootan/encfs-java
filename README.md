@@ -101,3 +101,5 @@ new EncFSVolumeBuilder()
         }
     });
 ```
+
+#### Added 'synchronized' to all methods in EncFSCrypto.java
