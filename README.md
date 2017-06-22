@@ -9,9 +9,29 @@ https://github.com/mrpdaemon/encfs-java
 
 ##### Cipher is not thread-safe:
 ###### BlockCrypto.java:
-  - volume.getBlockCipher() to BlockCrypto.newBlockCipher()
+```java
+  private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
+			byte[] data, int opMode) throws InvalidAlgorithmParameterException,
+			IllegalBlockSizeException, BadPaddingException,
+			EncFSUnsupportedException {
+		//Cipher cipher = volume.getBlockCipher();
+		Cipher cipher = BlockCrypto.newBlockCipher();
+		EncFSCrypto.cipherInit(volume, opMode, cipher, ivSeed);
+		return cipher.doFinal(data);
+	}
+```
 ###### StreamCrypto.java:
-  - volume.getStreamCipher() to StreamCrypto.newStreamCipher()
+```java
+  public static byte[] streamDecrypt(EncFSVolume volume, byte[] ivSeed,
+			byte[] data) throws EncFSUnsupportedException,
+			InvalidAlgorithmParameterException, IllegalBlockSizeException,
+			BadPaddingException {
+		//Cipher streamCipher = volume.getStreamCipher();
+		Cipher streamCipher = StreamCrypto.newStreamCipher();
+		return streamDecrypt(streamCipher, volume.getMAC(), volume.getKey(),
+				volume.getIV(), ivSeed, data);
+	}
+```
   
 ##### Compatibility:
   - Arrays.copyOf() to EncFSUtil.copyOf()
