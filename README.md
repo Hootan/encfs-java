@@ -80,7 +80,7 @@ if (headerLength > 0) {
 ...
 ```
 
-#### Added Java PBKDF2 provider
+#### Added Fast Java PBKDF2 provider
 ```java
 import org.mrpdaemon.sec.encfs.PBKDF2Engine;
 import org.mrpdaemon.sec.encfs.PBKDF2Parameters;
