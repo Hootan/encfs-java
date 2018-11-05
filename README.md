@@ -2,13 +2,14 @@
 
 A modified version of encfs-java for MiXplorer file manager.
 
-A modified version of encfs-java for MiXplorer file manager.
+The original project:
+https://github.com/mrpdaemon/encfs-java
 
-The original project:BusyBox v1.29.3 from > https://github.com/mrpdaemon/encfs-java
+### Changes:
 
-Changes:
-Cipher is not thread-safe:
-EncFSVolume.java:
+##### Cipher is not thread-safe:
+###### EncFSVolume.java:
+```java
 //private Cipher streamCipher;
 //private Cipher blockCipher;
 ...
@@ -23,7 +24,9 @@ EncFSVolume.java:
 /*public Cipher getBlockCipher() {
 	return blockCipher;
 }*/
-BlockCrypto.java:
+```
+###### BlockCrypto.java:
+```java
   private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
 			byte[] data, int opMode) throws InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException,
@@ -33,7 +36,9 @@ BlockCrypto.java:
 		EncFSCrypto.cipherInit(volume, opMode, cipher, ivSeed);
 		return cipher.doFinal(data);
 	}
-StreamCrypto.java:
+```
+###### StreamCrypto.java:
+```java
   public static byte[] streamDecrypt(EncFSVolume volume, byte[] ivSeed,
 			byte[] data) throws EncFSUnsupportedException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
@@ -43,12 +48,16 @@ StreamCrypto.java:
 		return streamDecrypt(streamCipher, volume.getMAC(), volume.getKey(),
 				volume.getIV(), ivSeed, data);
 	}
-Compatibility:
-Arrays.copyOf() to EncFSUtil.copyOf()
-Arrays.copyOfRange() to EncFSUtil.copyOfRange()
-new IOException(e) to new IOException(e.getMessage())
-Bugs:
-EncFSVolume.java:
+```
+  
+##### Compatibility:
+  - Arrays.copyOf() to EncFSUtil.copyOf()
+  - Arrays.copyOfRange() to EncFSUtil.copyOfRange()
+  - new IOException(e) to new IOException(e.getMessage())
+
+##### Bugs:
+###### EncFSVolume.java:
+```java
 public long getDecryptedFileLength(long encryptedFileLength) {
 
 ...
@@ -57,6 +66,9 @@ if (headerLength > 0) {
   long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
       ;//+ headerLength;
 ...
+```
+
+```java
 public long getEncryptedFileLength(long decryptedFileLength) {
 
 ...
@@ -67,7 +79,10 @@ if (headerLength > 0) {
   
   long numBlocks = ((size - 1) / (blockLength - headerLength)) + 1;
 ...
-Added Fast Java PBKDF2 provider
+```
+
+#### Added Fast Java PBKDF2 provider
+```java
 import org.mrpdaemon.sec.encfs.PBKDF2Engine;
 import org.mrpdaemon.sec.encfs.PBKDF2Parameters;
 ...    
@@ -86,4 +101,6 @@ new EncFSVolumeBuilder()
             }
         }
     });
-Added 'synchronized' to all methods in EncFSCrypto.java
+```
+
+#### Added 'synchronized' to all methods in EncFSCrypto.java
