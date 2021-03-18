@@ -55,31 +55,6 @@ https://github.com/mrpdaemon/encfs-java
   - Arrays.copyOfRange() to EncFSUtil.copyOfRange()
   - new IOException(e) to new IOException(e.getMessage())
 
-##### Bugs:
-###### EncFSVolume.java:
-```java
-public long getDecryptedFileLength(long encryptedFileLength) {
-
-...
-
-if (headerLength > 0) {
-  long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
-      ;//+ headerLength;
-...
-```
-
-```java
-public long getEncryptedFileLength(long decryptedFileLength) {
-
-...
-
-if (headerLength > 0) {
-  long blockLength = volumeConfig.getEncryptedFileBlockSizeInBytes()
-      //+ headerLength;
-  
-  long numBlocks = ((size - 1) / (blockLength - headerLength)) + 1;
-...
-```
 
 #### Added Fast Java PBKDF2 provider
 ```java
