@@ -1,6 +1,6 @@
 # encfs-java
 
-A modified version of encfs-java for MiXplorer file manager.
+A modified version of encfs-java.
 
 The original project:
 https://github.com/mrpdaemon/encfs-java
