@@ -27,27 +27,55 @@ https://github.com/mrpdaemon/encfs-java
 ```
 ###### BlockCrypto.java:
 ```java
-  private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
+  
+	private static final ThreadLocal<Cipher> BLOCK_CIPHER_CACHE = new ThreadLocal<>();
+
+	// Returns a block cipher object from the thread-local cache
+	static Cipher newBlockCipher() throws EncFSUnsupportedException {
+		Cipher cipher = BLOCK_CIPHER_CACHE.get();
+		if (cipher == null) {
+			cipher = EncFSCrypto.getCipher(EncFSCrypto.BLOCK_CIPHER);
+			BLOCK_CIPHER_CACHE.set(cipher);
+		}
+		return cipher;
+	}
+
+	// Common method to perform a block operation
+	private static byte[] blockOperation(EncFSVolume volume, byte[] ivSeed,
 			byte[] data, int opMode) throws InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException,
 			EncFSUnsupportedException {
-		//Cipher cipher = volume.getBlockCipher();
-		Cipher cipher = BlockCrypto.newBlockCipher();
+		Cipher cipher = newBlockCipher();
 		EncFSCrypto.cipherInit(volume, opMode, cipher, ivSeed);
 		return cipher.doFinal(data);
 	}
+
 ```
 ###### StreamCrypto.java:
 ```java
-  public static byte[] streamDecrypt(EncFSVolume volume, byte[] ivSeed,
-			byte[] data) throws EncFSUnsupportedException,
-			InvalidAlgorithmParameterException, IllegalBlockSizeException,
-			BadPaddingException {
-		//Cipher streamCipher = volume.getStreamCipher();
-		Cipher streamCipher = StreamCrypto.newStreamCipher();
-		return streamDecrypt(streamCipher, volume.getMAC(), volume.getKey(),
-				volume.getIV(), ivSeed, data);
+  
+	private static final ThreadLocal<Cipher> STREAM_CIPHER_CACHE = new ThreadLocal<>();
+
+	// Returns a stream cipher from the thread-local cache
+	public static Cipher newStreamCipher() throws EncFSUnsupportedException {
+		Cipher cipher = STREAM_CIPHER_CACHE.get();
+		if (cipher == null) {
+			cipher = EncFSCrypto.getCipher(EncFSCrypto.STREAM_CIPHER);
+			STREAM_CIPHER_CACHE.set(cipher);
+		}
+		return cipher;
 	}
+
+    // Stream decryption implementation
+    public static byte[] streamDecrypt(EncFSVolume volume, byte[] ivSeed,
+                                       byte[] data) throws EncFSUnsupportedException,
+            InvalidAlgorithmParameterException, IllegalBlockSizeException,
+            BadPaddingException {
+        Cipher streamCipher = newStreamCipher();
+        return streamDecrypt(streamCipher, volume.getMAC(), volume.getKey(),
+                volume.getIV(), ivSeed, data);
+    }
+
 ```
   
 ##### Compatibility:
@@ -78,4 +106,7 @@ new EncFSVolumeBuilder()
     });
 ```
 
-#### Added 'synchronized' to all methods in EncFSCrypto.java
+#### Added 'synchronized' to some methods in EncFSCrypto.java
+```java
+//
+```
