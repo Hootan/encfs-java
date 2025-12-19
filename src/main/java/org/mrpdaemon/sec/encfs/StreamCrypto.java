@@ -26,9 +26,16 @@ import java.util.StringTokenizer;
 // Static methods for stream cryptography
 public class StreamCrypto {
 
-	// Returns a stream cipher
+	private static final ThreadLocal<Cipher> STREAM_CIPHER_CACHE = new ThreadLocal<>();
+
+	// Returns a stream cipher from the thread-local cache
 	public static Cipher newStreamCipher() throws EncFSUnsupportedException {
-		return EncFSCrypto.getCipher(EncFSCrypto.STREAM_CIPHER);
+		Cipher cipher = STREAM_CIPHER_CACHE.get();
+		if (cipher == null) {
+			cipher = EncFSCrypto.getCipher(EncFSCrypto.STREAM_CIPHER);
+			STREAM_CIPHER_CACHE.set(cipher);
+		}
+		return cipher;
 	}
 
 	// Stream decryption implementation
