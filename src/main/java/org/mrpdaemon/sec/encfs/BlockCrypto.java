@@ -22,9 +22,16 @@ import java.security.InvalidAlgorithmParameterException;
 // Static methods for block cryptography
 class BlockCrypto {
 
-	// Returns a new block cipher object
-	protected static Cipher newBlockCipher() throws EncFSUnsupportedException {
-		return EncFSCrypto.getCipher(EncFSCrypto.BLOCK_CIPHER);
+	private static final ThreadLocal<Cipher> BLOCK_CIPHER_CACHE = new ThreadLocal<>();
+
+	// Returns a block cipher object from the thread-local cache
+	static Cipher newBlockCipher() throws EncFSUnsupportedException {
+		Cipher cipher = BLOCK_CIPHER_CACHE.get();
+		if (cipher == null) {
+			cipher = EncFSCrypto.getCipher(EncFSCrypto.BLOCK_CIPHER);
+			BLOCK_CIPHER_CACHE.set(cipher);
+		}
+		return cipher;
 	}
 
 	// Common method to perform a block operation
