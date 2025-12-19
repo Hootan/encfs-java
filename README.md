@@ -92,18 +92,25 @@ import org.mrpdaemon.sec.encfs.PBKDF2Parameters;
 
 new EncFSVolumeBuilder()
 	.withFileProvider(encFSFileProvider)
-	.withPbkdf2Provider(new EncFSPBKDF2Provider() {
+	.withPbkdf2Provider(pbkProvider);
+
+private static final EncFSPBKDF2Provider pbkProvider = new EncFSPBKDF2Provider() {
         @Override
-        public byte[] doPBKDF2(String password, int saltLen, byte[] salt, int iterations, int keyLen) {
+        public byte[] doPBKDF2(String password, byte[] salt, int iterations, int keySize) {
             try {
-                return new PBKDF2Engine(new PBKDF2Parameters("HmacSHA1", "ISO-8859-1", salt, iterations))
-                            .deriveKey(password.toCharArray(), keyLen + saltLen);
-            } catch (Exception e) {
-                MiXLog.e(e);
+                SecretKeyFactory f = SecretKeyFactory.getInstance(SupportUtils.hasKitKat() ?
+                        "PBKDF2WithHmacSHA1And8bit" : "PBKDF2WithHmacSHA1");
+                KeySpec ks = new PBEKeySpec(password.toCharArray(), salt, iterations,
+                        keySize + EncFSVolume.IV_LENGTH_IN_BYTES * 8);
+                SecretKey key = f.generateSecret(ks);
+                return key.getEncoded();
+
+            } catch (Throwable e) {
+                Log.e("PBKDF2", TextUtil.msg(e));
                 return null;
             }
         }
-    });
+    };
 ```
 
 #### Added 'synchronized' to some methods in EncFSCrypto.java
