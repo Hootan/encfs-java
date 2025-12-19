@@ -40,7 +40,7 @@ public final class EncFSCrypto {
 	}
 
 	// Create a new Mac object for the given key.
-	synchronized static Mac newMac(Key key) throws InvalidKeyException,
+	static Mac newMac(Key key) throws InvalidKeyException,
 			EncFSUnsupportedException {
 		Mac hmac;
 		try {
@@ -54,12 +54,12 @@ public final class EncFSCrypto {
 	}
 
 	// Creates a new AES key with the given key bytes.
-	synchronized static Key newKey(byte[] keyBytes) {
+	static Key newKey(byte[] keyBytes) {
 		return new SecretKeySpec(keyBytes, "AES");
 	}
 
 	// Return a a cipher with the given specification
-	synchronized static Cipher getCipher(String cipherSpec) throws EncFSUnsupportedException {
+	static Cipher getCipher(String cipherSpec) throws EncFSUnsupportedException {
 		try {
 			return Cipher.getInstance(cipherSpec);
 		} catch (NoSuchAlgorithmException e) {
@@ -135,7 +135,7 @@ public final class EncFSCrypto {
 	}
 
 	// Block encoding helper to do padding
-	synchronized static byte[] getBytesForBlockAlgorithm(String curPath) {
+	static byte[] getBytesForBlockAlgorithm(String curPath) {
 		byte[] encodeBytes;// Only pad for block mode
 
 		int byteLen = curPath.getBytes().length;
@@ -386,7 +386,7 @@ public final class EncFSCrypto {
 	}
 
 	// Flip the given byte input stream
-	synchronized static byte[] flipBytes(byte[] input) {
+	static byte[] flipBytes(byte[] input) {
 		byte[] result = new byte[input.length];
 
 		int offset = 0;
@@ -407,7 +407,7 @@ public final class EncFSCrypto {
 	}
 
 	// Increment the given IV seed by one
-	synchronized static byte[] incrementIvSeedByOne(byte[] ivSeed)
+	static byte[] incrementIvSeedByOne(byte[] ivSeed)
 			throws EncFSUnsupportedException {
 		if (ivSeed.length == 4) {
 			return EncFSUtil.convertIntToByteArrayBigEndian(EncFSUtil
@@ -421,7 +421,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute file IV
-	synchronized static byte[] computeFileIV(byte[] chainIv, byte[] macBytes) {
+	static byte[] computeFileIV(byte[] chainIv, byte[] macBytes) {
 		byte[] fileIv = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			fileIv[i] = (byte) (macBytes[i] ^ chainIv[i]);
@@ -430,7 +430,7 @@ public final class EncFSCrypto {
 	}
 
 	// Return first two bytes of a given 8 byte sequence
-	synchronized static byte[] getMacBytes(byte[] bytes) {
+	static byte[] getMacBytes(byte[] bytes) {
 		// TODO: make sure its multiple of 16
 		byte[] macBytes = new byte[8];
 		macBytes[6] = bytes[0];
@@ -439,7 +439,7 @@ public final class EncFSCrypto {
 	}
 
 	// Compute chained IV
-	synchronized static byte[] computeChainedIV(EncFSVolume volume, String volumePath,
+	static byte[] computeChainedIV(EncFSVolume volume, String volumePath,
 			EncFSConfig config) {
 		// Chained IV computation
 		byte[] chainIv = new byte[8];
